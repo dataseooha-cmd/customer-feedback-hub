@@ -142,7 +142,7 @@ export default {
   			'pulse-glow': 'pulse-glow 2s infinite'
   		},
   		boxShadow: {
-  			'survey': '0 4px 24px -4px hsl(var(--primary) / 0.15)',
+  			survey: '0 4px 24px -4px hsl(var(--primary) / 0.15)',
   			'survey-hover': '0 8px 32px -4px hsl(var(--primary) / 0.25)',
   			'2xs': 'var(--shadow-2xs)',
   			xs: 'var(--shadow-xs)',
