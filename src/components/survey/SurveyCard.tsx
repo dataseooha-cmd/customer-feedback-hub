@@ -8,12 +8,7 @@ interface SurveyCardProps {
 
 export function SurveyCard({ children, className }: SurveyCardProps) {
   return (
-    <div
-      className={cn(
-        "glass-card rounded-2xl p-6 md:p-8 shadow-survey animate-slide-up",
-        className
-      )}
-    >
+    <div className={cn("bg-white rounded-xl shadow-lg overflow-hidden", className)}>
       {children}
     </div>
   );

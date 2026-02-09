@@ -1,9 +1,21 @@
-import { SurveyData, REFERRAL_SOURCES, REGISTRATION_OPTIONS, SPEED_OPTIONS, CS_SERVICE_OPTIONS, EXPERIENCE_OPTIONS, ACCESS_OPTIONS, YES_NO_OPTIONS, CS_MEDIA_OPTIONS } from "@/types/survey";
-import { Star, CheckCircle } from "lucide-react";
+import {
+  SurveyData,
+  REFERRAL_SOURCES,
+  REGISTRATION_OPTIONS,
+  SPEED_OPTIONS,
+  CS_SERVICE_OPTIONS,
+  TOGEL_EXPERIENCE_OPTIONS,
+  SLOT_EXPERIENCE_OPTIONS,
+  CASINO_EXPERIENCE_OPTIONS,
+  ACCESS_OPTIONS,
+  RECOMMEND_OPTIONS,
+  SECURITY_OPTIONS,
+  WITHDRAW_ISSUE_OPTIONS,
+  CS_MEDIA_OPTIONS,
+} from "@/types/survey";
 
 interface SurveySummaryProps {
   data: Partial<SurveyData>;
-  siteName: string;
 }
 
 function getLabel(options: { value: string; label: string }[], value: string | undefined): string {
@@ -11,104 +23,62 @@ function getLabel(options: { value: string; label: string }[], value: string | u
   return options.find((opt) => opt.value === value)?.label || value;
 }
 
-export function SurveySummary({ data, siteName }: SurveySummaryProps) {
-  const sections = [
-    {
-      title: "Identitas Responden",
-      items: [
-        { label: "User ID", value: data.user_id },
-        { label: "WhatsApp", value: data.whatsapp },
-        { label: `Kenal ${siteName} dari`, value: getLabel(REFERRAL_SOURCES, data.referral_source) },
-        ...(data.referral_source === "lainnya" ? [{ label: "Sumber Lainnya", value: data.referral_other }] : []),
-      ],
-    },
-    {
-      title: "Penilaian Layanan Utama",
-      items: [
-        { label: "Kemudahan Pendaftaran", value: getLabel(REGISTRATION_OPTIONS, data.registration_ease) },
-        { label: "Kecepatan Deposit", value: getLabel(SPEED_OPTIONS, data.deposit_speed) },
-        { label: "Kecepatan Withdraw", value: getLabel(SPEED_OPTIONS, data.withdraw_speed) },
-        { label: "Pelayanan CS", value: getLabel(CS_SERVICE_OPTIONS, data.cs_service) },
-      ],
-    },
-    {
-      title: "Pengalaman Bermain",
-      items: [
-        { label: "Togel", value: getLabel(EXPERIENCE_OPTIONS, data.togel_experience) },
-        { label: "Slot", value: getLabel(EXPERIENCE_OPTIONS, data.slot_experience) },
-        { label: "Casino", value: getLabel(EXPERIENCE_OPTIONS, data.casino_experience) },
-        { label: "Akses Link/Permainan", value: getLabel(ACCESS_OPTIONS, data.access_ease) },
-      ],
-    },
-    {
-      title: "Feedback & Rekomendasi",
-      items: [
-        { label: "Akan Merekomendasikan", value: getLabel(YES_NO_OPTIONS, data.would_recommend) },
-        { label: "Merasa Aman dengan Data", value: getLabel(YES_NO_OPTIONS, data.data_security) },
-        { label: "Pernah Kendala Withdraw", value: getLabel(YES_NO_OPTIONS, data.withdraw_issue) },
-        { label: "Media CS Favorit", value: getLabel(CS_MEDIA_OPTIONS, data.preferred_cs_media) },
-      ],
-    },
+const ICONS = {
+  user_id: "🧑",
+  whatsapp: "📱",
+  referral: "📍",
+  registration: "📋",
+  deposit: "💰",
+  withdraw: "💸",
+  cs: "🎧",
+  togel: "🎯",
+  slot: "🎰",
+  casino: "🃏",
+  access: "🔗",
+  recommend: "⭐",
+  security: "🔒",
+  withdraw_issue: "⚠️",
+  media: "💬",
+  suggestions: "📝",
+};
+
+export function SurveySummary({ data }: SurveySummaryProps) {
+  const rows = [
+    { icon: ICONS.user_id, label: "Userid", value: data.user_id },
+    { icon: ICONS.whatsapp, label: "WhatsApp", value: data.whatsapp },
+    { icon: ICONS.referral, label: "Tahu dari", value: getLabel(REFERRAL_SOURCES, data.referral_source) },
+    { icon: ICONS.registration, label: "Pendaftaran", value: getLabel(REGISTRATION_OPTIONS, data.registration_ease) },
+    { icon: ICONS.deposit, label: "Deposit", value: getLabel(SPEED_OPTIONS, data.deposit_speed) },
+    { icon: ICONS.withdraw, label: "Withdraw", value: getLabel(SPEED_OPTIONS, data.withdraw_speed) },
+    { icon: ICONS.cs, label: "Pelayanan CS", value: getLabel(CS_SERVICE_OPTIONS, data.cs_service) },
+    { icon: ICONS.togel, label: "Pengalaman Togel", value: getLabel(TOGEL_EXPERIENCE_OPTIONS, data.togel_experience) },
+    { icon: ICONS.slot, label: "Pengalaman Slot", value: getLabel(SLOT_EXPERIENCE_OPTIONS, data.slot_experience) },
+    { icon: ICONS.casino, label: "Pengalaman Casino", value: getLabel(CASINO_EXPERIENCE_OPTIONS, data.casino_experience) },
+    { icon: ICONS.access, label: "Kemudahan Akses", value: getLabel(ACCESS_OPTIONS, data.access_ease) },
+    { icon: ICONS.recommend, label: "Rekomendasi", value: getLabel(RECOMMEND_OPTIONS, data.would_recommend) },
+    { icon: ICONS.security, label: "Keamanan Data", value: getLabel(SECURITY_OPTIONS, data.data_security) },
+    { icon: ICONS.withdraw_issue, label: "Kendala Withdraw", value: getLabel(WITHDRAW_ISSUE_OPTIONS, data.withdraw_issue) },
+    { icon: ICONS.media, label: "Media Komunikasi", value: getLabel(CS_MEDIA_OPTIONS, data.preferred_cs_media) },
+    ...(data.suggestions ? [{ icon: ICONS.suggestions, label: "Saran & Masukan", value: data.suggestions }] : []),
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="text-center mb-8">
-        <div className="w-16 h-16 mx-auto mb-4 rounded-full survey-gradient flex items-center justify-center">
-          <CheckCircle className="w-8 h-8 text-primary-foreground" />
-        </div>
-        <h2 className="text-2xl md:text-3xl font-display font-bold text-foreground mb-2">
-          Ringkasan Jawaban
-        </h2>
-        <p className="text-muted-foreground">
-          Periksa kembali jawaban Anda sebelum submit
-        </p>
-      </div>
-
-      <div className="space-y-6">
-        {sections.map((section) => (
-          <div key={section.title} className="p-4 bg-secondary/50 rounded-lg">
-            <h3 className="text-lg font-display font-semibold text-foreground mb-3">
-              {section.title}
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {section.items.map((item) => (
-                <div key={item.label} className="flex flex-col">
-                  <span className="text-sm text-muted-foreground">{item.label}</span>
-                  <span className="font-medium text-foreground">{item.value || "-"}</span>
-                </div>
-              ))}
-            </div>
+    <div className="bg-card rounded-lg p-5 animate-slide-up">
+      <h3 className="font-bold text-foreground flex items-center gap-2 mb-4">
+        📋 Ringkasan Jawaban Anda
+      </h3>
+      <div className="space-y-2.5">
+        {rows.map((row) => (
+          <div key={row.label} className="flex items-start gap-3">
+            <span className="text-sm flex-shrink-0 w-5 text-center">{row.icon}</span>
+            <span className="text-sm text-muted-foreground min-w-[140px] flex-shrink-0">{row.label}</span>
+            <span className="text-sm font-bold text-foreground">{row.value || "-"}</span>
           </div>
         ))}
-
-        <div className="p-4 bg-secondary/50 rounded-lg">
-          <h3 className="text-lg font-display font-semibold text-foreground mb-3">
-            Penilaian Keseluruhan
-          </h3>
-          <div className="flex items-center gap-2">
-            {Array.from({ length: 5 }, (_, i) => i + 1).map((star) => (
-              <Star
-                key={star}
-                className={`w-8 h-8 ${
-                  star <= (data.overall_rating || 0)
-                    ? "fill-survey-star text-survey-star"
-                    : "fill-transparent text-muted-foreground"
-                }`}
-              />
-            ))}
-            <span className="ml-2 text-lg font-semibold">{data.overall_rating || 0}/5</span>
-          </div>
-        </div>
-
-        {data.suggestions && (
-          <div className="p-4 bg-secondary/50 rounded-lg">
-            <h3 className="text-lg font-display font-semibold text-foreground mb-3">
-              Saran & Masukan
-            </h3>
-            <p className="text-foreground whitespace-pre-wrap">{data.suggestions}</p>
-          </div>
-        )}
+      </div>
+      <div className="mt-4 text-center text-xs text-muted-foreground">
+        <p>☑️ Pastikan semua data sudah benar sebelum mengirim.</p>
+        <p>Anda masih bisa kembali untuk mengubah jawaban.</p>
       </div>
     </div>
   );
