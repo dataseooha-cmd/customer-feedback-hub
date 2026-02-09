@@ -1,12 +1,94 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Save, Loader2 } from "lucide-react";
+import { Save, Loader2, Upload, X } from "lucide-react";
 import { SiteSettings } from "@/types/survey";
+
+function FileUploadField({
+  label,
+  value,
+  onUploaded,
+  bucket = "site-assets",
+  folder = "",
+}: {
+  label: string;
+  value: string | null;
+  onUploaded: (url: string | null) => void;
+  bucket?: string;
+  folder?: string;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      const ext = file.name.split(".").pop();
+      const fileName = `${folder}${Date.now()}.${ext}`;
+
+      const { error } = await supabase.storage
+        .from(bucket)
+        .upload(fileName, file, { upsert: true });
+
+      if (error) throw error;
+
+      const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(fileName);
+      onUploaded(urlData.publicUrl);
+      toast.success(`${label} berhasil diupload`);
+    } catch (err: any) {
+      console.error(err);
+      toast.error(`Gagal upload ${label}`);
+    } finally {
+      setUploading(false);
+      if (inputRef.current) inputRef.current.value = "";
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <Label className="text-sm font-medium">{label}</Label>
+      {value && (
+        <div className="flex items-center gap-2">
+          <img src={value} alt={label} className="h-12 w-12 rounded object-cover border" />
+          <button
+            type="button"
+            onClick={() => onUploaded(null)}
+            className="text-xs text-destructive hover:underline flex items-center gap-1"
+          >
+            <X className="w-3 h-3" /> Hapus
+          </button>
+        </div>
+      )}
+      <div className="flex gap-2">
+        <input
+          ref={inputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleUpload}
+          className="hidden"
+        />
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          disabled={uploading}
+          onClick={() => inputRef.current?.click()}
+          className="gap-1.5"
+        >
+          {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+          {uploading ? "Uploading..." : "Upload"}
+        </Button>
+      </div>
+    </div>
+  );
+}
 
 export function SettingsPanel() {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,6 +100,7 @@ export function SettingsPanel() {
     logo_url: "",
     favicon_url: "",
     background_color: "#f8fafc",
+    background_url: "",
     cs_contact: "",
   });
 
@@ -26,22 +109,14 @@ export function SettingsPanel() {
   }, []);
 
   const loadSettings = async () => {
-    const { data, error } = await supabase
-      .from("site_settings")
-      .select("*")
-      .single();
-
-    if (error) {
-      console.error(error);
-    } else if (data) {
-      setSettings(data as SiteSettings);
-    }
+    const { data, error } = await supabase.from("site_settings").select("*").single();
+    if (error) console.error(error);
+    else if (data) setSettings(data as unknown as SiteSettings);
     setIsLoading(false);
   };
 
   const handleSave = async () => {
     setIsSaving(true);
-
     try {
       const { error } = await supabase
         .from("site_settings")
@@ -52,13 +127,12 @@ export function SettingsPanel() {
           logo_url: settings.logo_url || null,
           favicon_url: settings.favicon_url || null,
           background_color: settings.background_color || "#f8fafc",
+          background_url: (settings as any).background_url || null,
           cs_contact: settings.cs_contact || null,
           updated_at: new Date().toISOString(),
         })
         .eq("id", settings.id);
-
       if (error) throw error;
-
       toast.success("Settings berhasil disimpan");
     } catch (error: any) {
       console.error(error);
@@ -68,7 +142,7 @@ export function SettingsPanel() {
     }
   };
 
-  const handleChange = (field: keyof SiteSettings, value: string) => {
+  const handleChange = (field: string, value: string) => {
     setSettings((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -87,7 +161,7 @@ export function SettingsPanel() {
           Pengaturan Website
         </h2>
 
-        <div className="grid gap-4">
+        <div className="grid gap-5">
           <div className="space-y-2">
             <Label htmlFor="site_name">Nama Website</Label>
             <Input
@@ -96,9 +170,6 @@ export function SettingsPanel() {
               value={settings.site_name || ""}
               onChange={(e) => handleChange("site_name", e.target.value)}
             />
-            <p className="text-xs text-muted-foreground">
-              Nama ini akan digunakan di pertanyaan survei (menggantikan "nama web")
-            </p>
           </div>
 
           <div className="space-y-2">
@@ -123,27 +194,41 @@ export function SettingsPanel() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="logo_url">URL Logo</Label>
+            <Label htmlFor="cs_contact">Link Hubungi CS</Label>
             <Input
-              id="logo_url"
-              placeholder="https://example.com/logo.png"
-              value={settings.logo_url || ""}
-              onChange={(e) => handleChange("logo_url", e.target.value)}
+              id="cs_contact"
+              placeholder="https://wa.me/62812345678"
+              value={settings.cs_contact || ""}
+              onChange={(e) => handleChange("cs_contact", e.target.value)}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="favicon_url">URL Favicon</Label>
-            <Input
-              id="favicon_url"
-              placeholder="https://example.com/favicon.ico"
-              value={settings.favicon_url || ""}
-              onChange={(e) => handleChange("favicon_url", e.target.value)}
-            />
+          <div className="border-t border-border pt-4">
+            <h3 className="font-semibold text-foreground mb-4">Upload Assets</h3>
+            <div className="grid gap-5">
+              <FileUploadField
+                label="Logo"
+                value={settings.logo_url || null}
+                onUploaded={(url) => handleChange("logo_url", url || "")}
+                folder="logo/"
+              />
+              <FileUploadField
+                label="Favicon"
+                value={settings.favicon_url || null}
+                onUploaded={(url) => handleChange("favicon_url", url || "")}
+                folder="favicon/"
+              />
+              <FileUploadField
+                label="Background Image"
+                value={(settings as any).background_url || null}
+                onUploaded={(url) => handleChange("background_url", url || "")}
+                folder="background/"
+              />
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="background_color">Warna Background</Label>
+            <Label htmlFor="background_color">Warna Background (Fallback)</Label>
             <div className="flex gap-2">
               <Input
                 id="background_color"
@@ -160,22 +245,9 @@ export function SettingsPanel() {
               />
             </div>
           </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="cs_contact">Link Hubungi CS</Label>
-            <Input
-              id="cs_contact"
-              placeholder="https://wa.me/62812345678"
-              value={settings.cs_contact || ""}
-              onChange={(e) => handleChange("cs_contact", e.target.value)}
-            />
-            <p className="text-xs text-muted-foreground">
-              Link WhatsApp, Telegram, atau kontak lainnya
-            </p>
-          </div>
         </div>
 
-        <Button onClick={handleSave} disabled={isSaving} className="gap-2 survey-gradient border-0">
+        <Button onClick={handleSave} disabled={isSaving} className="gap-2 bg-foreground text-background hover:bg-foreground/90">
           {isSaving ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -188,17 +260,6 @@ export function SettingsPanel() {
             </>
           )}
         </Button>
-      </div>
-
-      <div className="p-6 bg-card rounded-lg border border-border space-y-4">
-        <h2 className="text-xl font-display font-semibold text-foreground">
-          Catatan SEO
-        </h2>
-        <p className="text-sm text-muted-foreground">
-          Untuk mengubah favicon dan meta tags secara global, Anda bisa mengedit file 
-          <code className="mx-1 px-1 py-0.5 bg-secondary rounded">index.html</code>
-          di root project.
-        </p>
       </div>
     </div>
   );

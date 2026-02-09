@@ -2,19 +2,18 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Download, RefreshCw, Star, Search } from "lucide-react";
+import { Download, RefreshCw, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
 import { id as localeId } from "date-fns/locale";
-import { REFERRAL_SOURCES, REGISTRATION_OPTIONS, SPEED_OPTIONS, CS_SERVICE_OPTIONS, EXPERIENCE_OPTIONS, ACCESS_OPTIONS, YES_NO_OPTIONS, CS_MEDIA_OPTIONS } from "@/types/survey";
+import {
+  REFERRAL_SOURCES, REGISTRATION_OPTIONS, SPEED_OPTIONS, CS_SERVICE_OPTIONS,
+  TOGEL_EXPERIENCE_OPTIONS, SLOT_EXPERIENCE_OPTIONS, CASINO_EXPERIENCE_OPTIONS,
+  ACCESS_OPTIONS, RECOMMEND_OPTIONS, SECURITY_OPTIONS, WITHDRAW_ISSUE_OPTIONS, CS_MEDIA_OPTIONS,
+} from "@/types/survey";
 
 interface Response {
   id: string;
@@ -37,6 +36,7 @@ interface Response {
   preferred_cs_media: string;
   overall_rating: number;
   suggestions: string | null;
+  response_number?: number;
 }
 
 function getLabel(options: { value: string; label: string }[], value: string): string {
@@ -48,9 +48,7 @@ export function ResponsesTable() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    loadResponses();
-  }, []);
+  useEffect(() => { loadResponses(); }, []);
 
   const loadResponses = async () => {
     setIsLoading(true);
@@ -75,52 +73,35 @@ export function ResponsesTable() {
 
   const exportToCSV = () => {
     const headers = [
-      "Tanggal",
-      "User ID",
-      "WhatsApp",
-      "Sumber Referral",
-      "Sumber Lainnya",
-      "Kemudahan Pendaftaran",
-      "Kecepatan Deposit",
-      "Kecepatan Withdraw",
-      "Pelayanan CS",
-      "Pengalaman Togel",
-      "Pengalaman Slot",
-      "Pengalaman Casino",
-      "Akses Link",
-      "Akan Merekomendasikan",
-      "Keamanan Data",
-      "Kendala Withdraw",
-      "Media CS",
-      "Rating",
-      "Saran"
+      "No", "Tanggal", "User ID", "WhatsApp", "Sumber Referral", "Sumber Lainnya",
+      "Kemudahan Pendaftaran", "Kecepatan Deposit", "Kecepatan Withdraw", "Pelayanan CS",
+      "Pengalaman Togel", "Pengalaman Slot", "Pengalaman Casino", "Akses Link",
+      "Rekomendasi", "Keamanan Data", "Kendala Withdraw", "Media CS", "Saran",
     ];
 
     const rows = filteredResponses.map((r) => [
+      r.response_number?.toString() || "",
       format(new Date(r.created_at), "dd/MM/yyyy HH:mm"),
-      r.user_id,
-      r.whatsapp,
-      getLabel(REFERRAL_SOURCES, r.referral_source),
-      r.referral_other || "",
+      r.user_id, r.whatsapp,
+      getLabel(REFERRAL_SOURCES, r.referral_source), r.referral_other || "",
       getLabel(REGISTRATION_OPTIONS, r.registration_ease),
       getLabel(SPEED_OPTIONS, r.deposit_speed),
       getLabel(SPEED_OPTIONS, r.withdraw_speed),
       getLabel(CS_SERVICE_OPTIONS, r.cs_service),
-      getLabel(EXPERIENCE_OPTIONS, r.togel_experience),
-      getLabel(EXPERIENCE_OPTIONS, r.slot_experience),
-      getLabel(EXPERIENCE_OPTIONS, r.casino_experience),
+      getLabel(TOGEL_EXPERIENCE_OPTIONS, r.togel_experience),
+      getLabel(SLOT_EXPERIENCE_OPTIONS, r.slot_experience),
+      getLabel(CASINO_EXPERIENCE_OPTIONS, r.casino_experience),
       getLabel(ACCESS_OPTIONS, r.access_ease),
-      getLabel(YES_NO_OPTIONS, r.would_recommend),
-      getLabel(YES_NO_OPTIONS, r.data_security),
-      getLabel(YES_NO_OPTIONS, r.withdraw_issue),
+      getLabel(RECOMMEND_OPTIONS, r.would_recommend),
+      getLabel(SECURITY_OPTIONS, r.data_security),
+      getLabel(WITHDRAW_ISSUE_OPTIONS, r.withdraw_issue),
       getLabel(CS_MEDIA_OPTIONS, r.preferred_cs_media),
-      r.overall_rating.toString(),
-      r.suggestions || ""
+      r.suggestions || "",
     ]);
 
     const csvContent = [
       headers.join(","),
-      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(","))
+      ...rows.map((row) => row.map((cell) => `"${cell}"`).join(",")),
     ].join("\n");
 
     const blob = new Blob(["\ufeff" + csvContent], { type: "text/csv;charset=utf-8;" });
@@ -128,13 +109,8 @@ export function ResponsesTable() {
     link.href = URL.createObjectURL(blob);
     link.download = `survey-responses-${format(new Date(), "yyyy-MM-dd")}.csv`;
     link.click();
-
     toast.success("Data berhasil diekspor");
   };
-
-  const averageRating = responses.length > 0
-    ? (responses.reduce((sum, r) => sum + r.overall_rating, 0) / responses.length).toFixed(1)
-    : "0";
 
   return (
     <div className="space-y-6">
@@ -144,16 +120,15 @@ export function ResponsesTable() {
           <p className="text-3xl font-display font-bold text-foreground">{responses.length}</p>
         </div>
         <div className="p-4 bg-card rounded-lg border border-border">
-          <p className="text-sm text-muted-foreground">Rata-rata Rating</p>
-          <div className="flex items-center gap-2">
-            <Star className="w-6 h-6 fill-survey-star text-survey-star" />
-            <p className="text-3xl font-display font-bold text-foreground">{averageRating}</p>
-          </div>
+          <p className="text-sm text-muted-foreground">Akan Merekomendasikan</p>
+          <p className="text-3xl font-display font-bold text-foreground">
+            {responses.filter((r) => r.would_recommend === "pasti" || r.would_recommend === "sudah").length}
+          </p>
         </div>
         <div className="p-4 bg-card rounded-lg border border-border">
-          <p className="text-sm text-muted-foreground">Akan Merekomendasikan</p>
-          <p className="text-3xl font-display font-bold text-survey-success">
-            {responses.filter((r) => r.would_recommend === "ya").length}
+          <p className="text-sm text-muted-foreground">Hari Ini</p>
+          <p className="text-3xl font-display font-bold text-foreground">
+            {responses.filter((r) => new Date(r.created_at).toDateString() === new Date().toDateString()).length}
           </p>
         </div>
       </div>
@@ -170,12 +145,10 @@ export function ResponsesTable() {
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={loadResponses} className="gap-2">
-            <RefreshCw className="w-4 h-4" />
-            Refresh
+            <RefreshCw className="w-4 h-4" /> Refresh
           </Button>
-          <Button onClick={exportToCSV} className="gap-2 survey-gradient border-0">
-            <Download className="w-4 h-4" />
-            Export CSV
+          <Button onClick={exportToCSV} className="gap-2 bg-foreground text-background hover:bg-foreground/90">
+            <Download className="w-4 h-4" /> Export CSV
           </Button>
         </div>
       </div>
@@ -185,11 +158,11 @@ export function ResponsesTable() {
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead>#</TableHead>
                 <TableHead>Tanggal</TableHead>
                 <TableHead>User ID</TableHead>
                 <TableHead>WhatsApp</TableHead>
                 <TableHead>Sumber</TableHead>
-                <TableHead>Rating</TableHead>
                 <TableHead>Rekomendasi</TableHead>
                 <TableHead>Saran</TableHead>
               </TableRow>
@@ -198,7 +171,7 @@ export function ResponsesTable() {
               {isLoading ? (
                 <TableRow>
                   <TableCell colSpan={7} className="text-center py-8">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground mx-auto" />
                   </TableCell>
                 </TableRow>
               ) : filteredResponses.length === 0 ? (
@@ -210,28 +183,23 @@ export function ResponsesTable() {
               ) : (
                 filteredResponses.map((response) => (
                   <TableRow key={response.id}>
-                    <TableCell className="whitespace-nowrap">
+                    <TableCell className="font-mono text-xs">#{response.response_number || "—"}</TableCell>
+                    <TableCell className="whitespace-nowrap text-sm">
                       {format(new Date(response.created_at), "dd MMM yyyy HH:mm", { locale: localeId })}
                     </TableCell>
                     <TableCell className="font-medium">{response.user_id}</TableCell>
                     <TableCell>{response.whatsapp}</TableCell>
                     <TableCell>{getLabel(REFERRAL_SOURCES, response.referral_source)}</TableCell>
                     <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4 fill-survey-star text-survey-star" />
-                        {response.overall_rating}
-                      </div>
-                    </TableCell>
-                    <TableCell>
                       <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        response.would_recommend === "ya"
-                          ? "bg-survey-success/20 text-survey-success"
+                        response.would_recommend === "pasti" || response.would_recommend === "sudah"
+                          ? "bg-emerald-100 text-emerald-700"
                           : "bg-destructive/20 text-destructive"
                       }`}>
-                        {response.would_recommend === "ya" ? "Ya" : "Tidak"}
+                        {getLabel(RECOMMEND_OPTIONS, response.would_recommend)}
                       </span>
                     </TableCell>
-                    <TableCell className="max-w-xs truncate">{response.suggestions || "-"}</TableCell>
+                    <TableCell className="max-w-xs truncate text-sm">{response.suggestions || "-"}</TableCell>
                   </TableRow>
                 ))
               )}

@@ -49,6 +49,7 @@ export type Database = {
           referral_other: string | null
           referral_source: string
           registration_ease: string
+          response_number: number
           slot_experience: string
           suggestions: string | null
           togel_experience: string
@@ -66,11 +67,12 @@ export type Database = {
           data_security: string
           deposit_speed: string
           id?: string
-          overall_rating: number
+          overall_rating?: number
           preferred_cs_media: string
           referral_other?: string | null
           referral_source: string
           registration_ease: string
+          response_number?: number
           slot_experience: string
           suggestions?: string | null
           togel_experience: string
@@ -93,6 +95,7 @@ export type Database = {
           referral_other?: string | null
           referral_source?: string
           registration_ease?: string
+          response_number?: number
           slot_experience?: string
           suggestions?: string | null
           togel_experience?: string
@@ -107,6 +110,7 @@ export type Database = {
       site_settings: {
         Row: {
           background_color: string | null
+          background_url: string | null
           cs_contact: string | null
           favicon_url: string | null
           id: string
@@ -118,6 +122,7 @@ export type Database = {
         }
         Insert: {
           background_color?: string | null
+          background_url?: string | null
           cs_contact?: string | null
           favicon_url?: string | null
           id?: string
@@ -129,6 +134,7 @@ export type Database = {
         }
         Update: {
           background_color?: string | null
+          background_url?: string | null
           cs_contact?: string | null
           favicon_url?: string | null
           id?: string

@@ -11,25 +11,16 @@ interface QuestionGroupProps {
   options: Option[];
   value: string;
   onChange: (value: string) => void;
-  siteName?: string;
+  error?: string;
 }
 
-export function QuestionGroup({ 
-  question, 
-  name, 
-  options, 
-  value, 
-  onChange,
-  siteName = "kami"
-}: QuestionGroupProps) {
-  const formattedQuestion = question.replace(/\(nama web\)/g, siteName);
-
+export function QuestionGroup({ question, name, options, value, onChange, error }: QuestionGroupProps) {
   return (
-    <div className="space-y-4 animate-fade-in">
-      <h3 className="text-lg font-semibold text-foreground">
-        {formattedQuestion}
-      </h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div className="space-y-2">
+      <p className="font-semibold text-sm text-foreground">
+        {question} <span className="text-destructive">*</span>
+      </p>
+      <div className="space-y-1">
         {options.map((option) => (
           <RadioOption
             key={option.value}
@@ -41,6 +32,7 @@ export function QuestionGroup({
           />
         ))}
       </div>
+      {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );
 }
