@@ -5,8 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Loader2, LogIn } from "lucide-react";
-import { SurveyCard } from "@/components/survey/SurveyCard";
+import { Loader2, Lock } from "lucide-react";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -15,17 +14,14 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Check if already logged in
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session) {
-        // Check if user is admin
         const { data: roles } = await supabase
           .from("user_roles")
           .select("role")
           .eq("user_id", session.user.id)
           .single();
-        
         if (roles?.role === "admin") {
           navigate("/admin/dashboard");
         }
@@ -46,7 +42,6 @@ export default function AdminLogin() {
 
       if (error) throw error;
 
-      // Check if user has admin role
       const { data: roles, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
@@ -69,21 +64,25 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-display font-bold survey-gradient-text mb-2">
+    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
+      <div className="w-full max-w-sm">
+        <div className="bg-card rounded-2xl shadow-lg border border-border p-8">
+          <div className="flex justify-center mb-6">
+            <div className="w-14 h-14 rounded-full bg-foreground flex items-center justify-center">
+              <Lock className="w-6 h-6 text-background" />
+            </div>
+          </div>
+
+          <h1 className="text-xl font-display font-bold text-center text-foreground mb-1">
             Admin Login
           </h1>
-          <p className="text-muted-foreground">
-            Masuk untuk mengakses dashboard admin
+          <p className="text-sm text-muted-foreground text-center mb-6">
+            Masukkan kredensial Anda
           </p>
-        </div>
 
-        <SurveyCard>
           <form onSubmit={handleLogin} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="email" className="text-xs font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
@@ -91,11 +90,12 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                className="h-10"
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+            <div className="space-y-1.5">
+              <Label htmlFor="password" className="text-xs font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
@@ -103,34 +103,32 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                className="h-10"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full gap-2 survey-gradient border-0"
+              className="w-full h-10 bg-foreground text-background hover:bg-foreground/90 font-medium"
               disabled={isLoading}
             >
               {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  Memproses...
-                </>
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <>
-                  <LogIn className="w-4 h-4" />
-                  Login
-                </>
+                "Masuk"
               )}
             </Button>
           </form>
-        </SurveyCard>
-
-        <div className="text-center mt-4">
-          <Button variant="link" onClick={() => navigate("/")}>
-            Kembali ke Survei
-          </Button>
         </div>
+
+        <p className="text-center mt-4">
+          <button
+            onClick={() => navigate("/")}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← Kembali ke Survei
+          </button>
+        </p>
       </div>
     </div>
   );

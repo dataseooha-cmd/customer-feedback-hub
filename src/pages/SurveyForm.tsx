@@ -114,7 +114,7 @@ export default function SurveyForm() {
         return;
       }
 
-      const { data: result, error } = await supabase.from("responses").insert({
+      const { error } = await supabase.from("responses").insert({
         user_id: data.user_id,
         whatsapp: data.whatsapp,
         referral_source: data.referral_source,
@@ -133,14 +133,13 @@ export default function SurveyForm() {
         preferred_cs_media: data.preferred_cs_media,
         overall_rating: data.overall_rating || 0,
         suggestions: data.suggestions || null,
-      }).select("response_number, created_at").single();
+      });
 
       if (error) throw error;
 
       navigate("/success", {
         state: {
-          response_number: result?.response_number,
-          created_at: result?.created_at,
+          created_at: new Date().toISOString(),
         },
       });
     } catch (error: any) {
@@ -170,7 +169,7 @@ export default function SurveyForm() {
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <SurveyHeader settings={siteSettings} />
           <div className="px-6 pt-4">
-            <ProgressStepper currentStep={currentStep} totalSteps={3} />
+            <ProgressStepper currentStep={currentStep} totalSteps={3} progressColor={siteSettings?.progress_color} />
           </div>
 
           <div className="px-6 py-4 space-y-4">
@@ -200,7 +199,7 @@ export default function SurveyForm() {
             )}
 
             {currentStep < 3 ? (
-              <Button onClick={handleNext} className="gap-1.5 text-sm bg-foreground text-background hover:bg-foreground/90">
+              <Button onClick={handleNext} className="gap-1.5 text-sm" style={{ background: siteSettings?.primary_color || undefined, color: '#fff' }}>
                 Lanjut
                 <ChevronRight className="w-4 h-4" />
               </Button>
@@ -217,7 +216,8 @@ export default function SurveyForm() {
                 <Button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
-                  className="gap-1.5 text-sm bg-foreground text-background hover:bg-foreground/90"
+                  className="gap-1.5 text-sm"
+                  style={{ background: siteSettings?.primary_color || undefined, color: '#fff' }}
                 >
                   {isSubmitting ? (
                     <>

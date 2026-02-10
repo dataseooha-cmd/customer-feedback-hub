@@ -9,8 +9,13 @@ export function SurveyHeader({ settings }: SurveyHeaderProps) {
   const siteTitle = settings?.site_title || "Penilaian Layanan Pelanggan";
   const siteDescription = settings?.site_description || "Mohon luangkan waktu sebentar untuk mengisi survei berikut.";
 
+  const headerBg = settings?.header_color || undefined;
+
   return (
-    <div className="survey-header-bg text-white px-6 py-5 rounded-t-xl flex items-start gap-4">
+    <div
+      className="text-white px-6 py-5 rounded-t-xl flex items-start gap-4 survey-header-bg"
+      style={headerBg ? { background: headerBg } : undefined}
+    >
       {settings?.logo_url && (
         <img
           src={settings.logo_url}
