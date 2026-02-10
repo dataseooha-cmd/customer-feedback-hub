@@ -102,6 +102,10 @@ export function SettingsPanel() {
     background_color: "#f8fafc",
     background_url: "",
     cs_contact: "",
+    primary_color: "#222222",
+    accent_color: "#FBBF24",
+    header_color: "#222222",
+    progress_color: "#EF4444",
   });
 
   useEffect(() => {
@@ -129,6 +133,10 @@ export function SettingsPanel() {
           background_color: settings.background_color || "#f8fafc",
           background_url: (settings as any).background_url || null,
           cs_contact: settings.cs_contact || null,
+          primary_color: settings.primary_color || "#222222",
+          accent_color: settings.accent_color || "#FBBF24",
+          header_color: settings.header_color || "#222222",
+          progress_color: settings.progress_color || "#EF4444",
           updated_at: new Date().toISOString(),
         })
         .eq("id", settings.id);
@@ -227,22 +235,35 @@ export function SettingsPanel() {
             </div>
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="background_color">Warna Background (Fallback)</Label>
-            <div className="flex gap-2">
-              <Input
-                id="background_color"
-                type="color"
-                value={settings.background_color || "#f8fafc"}
-                onChange={(e) => handleChange("background_color", e.target.value)}
-                className="w-16 h-10 p-1 cursor-pointer"
-              />
-              <Input
-                value={settings.background_color || "#f8fafc"}
-                onChange={(e) => handleChange("background_color", e.target.value)}
-                placeholder="#f8fafc"
-                className="flex-1"
-              />
+          <div className="border-t border-border pt-4">
+            <h3 className="font-semibold text-foreground mb-4">Warna Tema</h3>
+            <div className="grid gap-4">
+              {[
+                { id: "header_color", label: "Warna Header", fallback: "#222222" },
+                { id: "primary_color", label: "Warna Tombol Utama", fallback: "#222222" },
+                { id: "accent_color", label: "Warna Aksen", fallback: "#FBBF24" },
+                { id: "progress_color", label: "Warna Progress Bar", fallback: "#EF4444" },
+                { id: "background_color", label: "Warna Background (Fallback)", fallback: "#f8fafc" },
+              ].map(({ id, label, fallback }) => (
+                <div key={id} className="space-y-1.5">
+                  <Label htmlFor={id} className="text-sm">{label}</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      id={id}
+                      type="color"
+                      value={(settings as any)[id] || fallback}
+                      onChange={(e) => handleChange(id, e.target.value)}
+                      className="w-12 h-9 p-1 cursor-pointer rounded"
+                    />
+                    <Input
+                      value={(settings as any)[id] || fallback}
+                      onChange={(e) => handleChange(id, e.target.value)}
+                      placeholder={fallback}
+                      className="flex-1 h-9"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

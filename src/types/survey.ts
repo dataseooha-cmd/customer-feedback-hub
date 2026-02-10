@@ -29,6 +29,10 @@ export interface SiteSettings {
   background_color: string | null;
   background_url: string | null;
   cs_contact: string | null;
+  primary_color: string | null;
+  accent_color: string | null;
+  header_color: string | null;
+  progress_color: string | null;
   updated_at: string;
 }
 

@@ -13,7 +13,6 @@ export default function SuccessPage() {
   const location = useLocation();
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
 
-  const responseNumber = location.state?.response_number;
   const createdAt = location.state?.created_at;
 
   useEffect(() => {
@@ -64,9 +63,6 @@ export default function SuccessPage() {
 
               {/* Response info */}
               <div className="bg-secondary rounded-lg py-4 px-6 inline-block mx-auto">
-                <p className="text-sm text-foreground">
-                  📊 ID Respons: <strong>#{responseNumber || "—"}</strong>
-                </p>
                 <p className="text-sm text-foreground">
                   ⏰ Waktu: <strong>{formattedTime}</strong>
                 </p>
