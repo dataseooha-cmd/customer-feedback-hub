@@ -43,7 +43,7 @@ function FileUploadField({
       onUploaded(urlData.publicUrl);
       toast.success(`${label} berhasil diupload`);
     } catch (err: any) {
-      console.error(err);
+      if (import.meta.env.DEV) console.error(err);
       toast.error(`Gagal upload ${label}`);
     } finally {
       setUploading(false);
@@ -110,7 +110,7 @@ export function SettingsPanel() {
 
   const loadSettings = async () => {
     const { data, error } = await supabase.from("site_settings").select("*").single();
-    if (error) console.error(error);
+    if (error && import.meta.env.DEV) console.error(error);
     else if (data) setSettings(data as unknown as SiteSettings);
     setIsLoading(false);
   };
@@ -135,7 +135,7 @@ export function SettingsPanel() {
       if (error) throw error;
       toast.success("Settings berhasil disimpan");
     } catch (error: any) {
-      console.error(error);
+      if (import.meta.env.DEV) console.error(error);
       toast.error("Gagal menyimpan settings");
     } finally {
       setIsSaving(false);

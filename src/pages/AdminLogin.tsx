@@ -61,7 +61,7 @@ export default function AdminLogin() {
       toast.success("Login berhasil!");
       navigate("/admin/dashboard");
     } catch (error: any) {
-      console.error("Login error:", error);
+      if (import.meta.env.DEV) console.error("Login error:", error);
       toast.error(error.message || "Email atau password salah");
     } finally {
       setIsLoading(false);

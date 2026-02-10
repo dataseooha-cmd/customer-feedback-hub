@@ -144,7 +144,7 @@ export default function SurveyForm() {
         },
       });
     } catch (error: any) {
-      console.error("Error submitting survey:", error);
+      if (import.meta.env.DEV) console.error("Error submitting survey:", error);
       toast.error("Gagal mengirim survei. Silakan coba lagi.");
     } finally {
       setIsSubmitting(false);
