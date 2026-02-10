@@ -59,7 +59,7 @@ export function ResponsesTable() {
 
     if (error) {
       toast.error("Gagal memuat data");
-      console.error(error);
+      if (import.meta.env.DEV) console.error(error);
     } else {
       setResponses((data as Response[]) || []);
     }
