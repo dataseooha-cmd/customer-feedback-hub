@@ -109,36 +109,48 @@ export type Database = {
       }
       site_settings: {
         Row: {
+          accent_color: string | null
           background_color: string | null
           background_url: string | null
           cs_contact: string | null
           favicon_url: string | null
+          header_color: string | null
           id: string
           logo_url: string | null
+          primary_color: string | null
+          progress_color: string | null
           site_description: string
           site_name: string
           site_title: string
           updated_at: string
         }
         Insert: {
+          accent_color?: string | null
           background_color?: string | null
           background_url?: string | null
           cs_contact?: string | null
           favicon_url?: string | null
+          header_color?: string | null
           id?: string
           logo_url?: string | null
+          primary_color?: string | null
+          progress_color?: string | null
           site_description?: string
           site_name?: string
           site_title?: string
           updated_at?: string
         }
         Update: {
+          accent_color?: string | null
           background_color?: string | null
           background_url?: string | null
           cs_contact?: string | null
           favicon_url?: string | null
+          header_color?: string | null
           id?: string
           logo_url?: string | null
+          primary_color?: string | null
+          progress_color?: string | null
           site_description?: string
           site_name?: string
           site_title?: string
