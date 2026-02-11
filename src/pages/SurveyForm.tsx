@@ -95,26 +95,7 @@ export default function SurveyForm() {
 
     setIsSubmitting(true);
     try {
-      // Check 1 per day limit
-      const today = new Date();
-      const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate()).toISOString();
-      const endOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1).toISOString();
-
-      const { data: existing } = await supabase
-        .from("responses")
-        .select("id")
-        .eq("user_id", data.user_id!)
-        .gte("created_at", startOfDay)
-        .lt("created_at", endOfDay)
-        .limit(1);
-
-      if (existing && existing.length > 0) {
-        toast.error("User ID ini sudah mengisi survei hari ini. Silakan coba lagi besok.");
-        setIsSubmitting(false);
-        return;
-      }
-
-      const { error } = await supabase.from("responses").insert({
+      const { data: result, error } = await supabase.from("responses").insert({
         user_id: data.user_id,
         whatsapp: data.whatsapp,
         referral_source: data.referral_source,
@@ -133,18 +114,26 @@ export default function SurveyForm() {
         preferred_cs_media: data.preferred_cs_media,
         overall_rating: data.overall_rating || 0,
         suggestions: data.suggestions || null,
-      });
+      }).select("response_number").single();
 
       if (error) throw error;
 
       navigate("/success", {
         state: {
           created_at: new Date().toISOString(),
+          response_number: result?.response_number,
         },
       });
     } catch (error: any) {
       if (import.meta.env.DEV) console.error("Error submitting survey:", error);
-      toast.error("Gagal mengirim survei. Silakan coba lagi.");
+      
+      // User-friendly error messages
+      const msg = error?.message || "";
+      if (msg.includes("already submitted")) {
+        toast.error("User ID ini sudah mengisi survei hari ini. Silakan coba lagi besok.");
+      } else {
+        toast.error("Gagal mengirim survei. Silakan coba lagi.");
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -160,8 +149,6 @@ export default function SurveyForm() {
   } else if (siteSettings?.background_color) {
     bgStyle.background = siteSettings.background_color;
   }
-
-  const stepLabel = currentStep === 3 && showSummary ? "Selesai" : undefined;
 
   return (
     <div className="min-h-screen survey-bg py-6 px-4" style={bgStyle}>

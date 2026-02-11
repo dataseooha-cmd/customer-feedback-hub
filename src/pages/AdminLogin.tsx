@@ -66,17 +66,17 @@ export default function AdminLogin() {
   return (
     <div className="min-h-screen bg-muted flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
-        <div className="bg-card rounded-2xl shadow-lg border border-border p-8">
+        <div className="bg-card rounded-xl shadow-sm border border-border p-8">
           <div className="flex justify-center mb-6">
-            <div className="w-14 h-14 rounded-full bg-foreground flex items-center justify-center">
-              <Lock className="w-6 h-6 text-background" />
+            <div className="w-12 h-12 rounded-full bg-foreground flex items-center justify-center">
+              <Lock className="w-5 h-5 text-background" />
             </div>
           </div>
 
-          <h1 className="text-xl font-display font-bold text-center text-foreground mb-1">
+          <h1 className="text-lg font-semibold text-center text-foreground mb-1">
             Admin Login
           </h1>
-          <p className="text-sm text-muted-foreground text-center mb-6">
+          <p className="text-xs text-muted-foreground text-center mb-6">
             Masukkan kredensial Anda
           </p>
 
@@ -90,7 +90,7 @@ export default function AdminLogin() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="h-10"
+                className="h-9"
               />
             </div>
 
@@ -103,13 +103,13 @@ export default function AdminLogin() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="h-10"
+                className="h-9"
               />
             </div>
 
             <Button
               type="submit"
-              className="w-full h-10 bg-foreground text-background hover:bg-foreground/90 font-medium"
+              className="w-full h-9 bg-foreground text-background hover:bg-foreground/90 text-sm font-medium"
               disabled={isLoading}
             >
               {isLoading ? (

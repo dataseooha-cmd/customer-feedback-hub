@@ -5,24 +5,30 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { Save, Loader2, Upload, X } from "lucide-react";
+import { Save, Loader2, Upload, X, Image, Globe, Palette } from "lucide-react";
 import { SiteSettings } from "@/types/survey";
 
 function FileUploadField({
   label,
+  description,
   value,
   onUploaded,
   bucket = "site-assets",
   folder = "",
+  previewSize = "md",
 }: {
   label: string;
+  description?: string;
   value: string | null;
   onUploaded: (url: string | null) => void;
   bucket?: string;
   folder?: string;
+  previewSize?: "sm" | "md" | "lg";
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+
+  const sizeClass = previewSize === "sm" ? "h-10 w-10" : previewSize === "lg" ? "h-24 w-full max-w-xs" : "h-14 w-14";
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -52,40 +58,47 @@ function FileUploadField({
   };
 
   return (
-    <div className="space-y-2">
-      <Label className="text-sm font-medium">{label}</Label>
-      {value && (
+    <div className="rounded-lg border border-border bg-muted/30 p-4 space-y-3">
+      <div className="flex items-center justify-between">
+        <div>
+          <Label className="text-sm font-semibold">{label}</Label>
+          {description && <p className="text-xs text-muted-foreground mt-0.5">{description}</p>}
+        </div>
         <div className="flex items-center gap-2">
-          <img src={value} alt={label} className="h-12 w-12 rounded object-cover border" />
-          <button
+          {value && (
+            <button
+              type="button"
+              onClick={() => onUploaded(null)}
+              className="text-xs text-destructive hover:underline flex items-center gap-1"
+            >
+              <X className="w-3 h-3" /> Hapus
+            </button>
+          )}
+          <input ref={inputRef} type="file" accept="image/*" onChange={handleUpload} className="hidden" />
+          <Button
             type="button"
-            onClick={() => onUploaded(null)}
-            className="text-xs text-destructive hover:underline flex items-center gap-1"
+            variant="outline"
+            size="sm"
+            disabled={uploading}
+            onClick={() => inputRef.current?.click()}
+            className="gap-1.5"
           >
-            <X className="w-3 h-3" /> Hapus
-          </button>
+            {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            {uploading ? "Uploading..." : value ? "Ganti" : "Upload"}
+          </Button>
+        </div>
+      </div>
+      {value && (
+        <div className="flex items-center gap-3">
+          <img src={value} alt={label} className={`${sizeClass} rounded-lg object-cover border border-border`} />
+          <p className="text-xs text-muted-foreground truncate flex-1">{value.split("/").pop()}</p>
         </div>
       )}
-      <div className="flex gap-2">
-        <input
-          ref={inputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleUpload}
-          className="hidden"
-        />
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          disabled={uploading}
-          onClick={() => inputRef.current?.click()}
-          className="gap-1.5"
-        >
-          {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-          {uploading ? "Uploading..." : "Upload"}
-        </Button>
-      </div>
+      {!value && (
+        <div className="flex items-center justify-center h-16 rounded-lg border-2 border-dashed border-border bg-muted/50">
+          <p className="text-xs text-muted-foreground">Belum ada file</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -141,7 +154,7 @@ export function SettingsPanel() {
         })
         .eq("id", settings.id);
       if (error) throw error;
-      toast.success("Settings berhasil disimpan");
+      toast.success("Settings berhasil disimpan! Perubahan akan terlihat di form survei.");
     } catch (error: any) {
       if (import.meta.env.DEV) console.error(error);
       toast.error("Gagal menyimpan settings");
@@ -157,21 +170,23 @@ export function SettingsPanel() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-foreground" />
       </div>
     );
   }
 
   return (
     <div className="max-w-2xl space-y-6">
-      <div className="p-6 bg-card rounded-lg border border-border space-y-6">
-        <h2 className="text-xl font-display font-semibold text-foreground">
-          Pengaturan Website
-        </h2>
+      {/* Website Info */}
+      <div className="p-6 bg-card rounded-lg border border-border space-y-5">
+        <div className="flex items-center gap-2">
+          <Globe className="w-5 h-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">Informasi Website</h2>
+        </div>
 
-        <div className="grid gap-5">
-          <div className="space-y-2">
-            <Label htmlFor="site_name">Nama Website</Label>
+        <div className="grid gap-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="site_name" className="text-sm">Nama Website</Label>
             <Input
               id="site_name"
               placeholder="Contoh: MyWebsite"
@@ -180,8 +195,8 @@ export function SettingsPanel() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="site_title">Judul Survei</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="site_title" className="text-sm">Judul Survei</Label>
             <Input
               id="site_title"
               placeholder="Contoh: Survei Kepuasan Pelanggan"
@@ -190,8 +205,8 @@ export function SettingsPanel() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="site_description">Deskripsi Survei</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="site_description" className="text-sm">Deskripsi Survei</Label>
             <Textarea
               id="site_description"
               placeholder="Deskripsi singkat survei..."
@@ -201,8 +216,8 @@ export function SettingsPanel() {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="cs_contact">Link Hubungi CS</Label>
+          <div className="space-y-1.5">
+            <Label htmlFor="cs_contact" className="text-sm">Link Hubungi CS</Label>
             <Input
               id="cs_contact"
               placeholder="https://wa.me/62812345678"
@@ -210,78 +225,90 @@ export function SettingsPanel() {
               onChange={(e) => handleChange("cs_contact", e.target.value)}
             />
           </div>
+        </div>
+      </div>
 
-          <div className="border-t border-border pt-4">
-            <h3 className="font-semibold text-foreground mb-4">Upload Assets</h3>
-            <div className="grid gap-5">
-              <FileUploadField
-                label="Logo"
-                value={settings.logo_url || null}
-                onUploaded={(url) => handleChange("logo_url", url || "")}
-                folder="logo/"
-              />
-              <FileUploadField
-                label="Favicon"
-                value={settings.favicon_url || null}
-                onUploaded={(url) => handleChange("favicon_url", url || "")}
-                folder="favicon/"
-              />
-              <FileUploadField
-                label="Background Image"
-                value={(settings as any).background_url || null}
-                onUploaded={(url) => handleChange("background_url", url || "")}
-                folder="background/"
-              />
-            </div>
-          </div>
+      {/* Assets Upload */}
+      <div className="p-6 bg-card rounded-lg border border-border space-y-5">
+        <div className="flex items-center gap-2">
+          <Image className="w-5 h-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">Upload Assets</h2>
+        </div>
+        <p className="text-xs text-muted-foreground -mt-2">
+          Perubahan akan diterapkan setelah menekan tombol <strong>Simpan Settings</strong>.
+        </p>
 
-          <div className="border-t border-border pt-4">
-            <h3 className="font-semibold text-foreground mb-4">Warna Tema</h3>
-            <div className="grid gap-4">
-              {[
-                { id: "header_color", label: "Warna Header", fallback: "#222222" },
-                { id: "primary_color", label: "Warna Tombol Utama", fallback: "#222222" },
-                { id: "accent_color", label: "Warna Aksen", fallback: "#FBBF24" },
-                { id: "progress_color", label: "Warna Progress Bar", fallback: "#EF4444" },
-                { id: "background_color", label: "Warna Background (Fallback)", fallback: "#f8fafc" },
-              ].map(({ id, label, fallback }) => (
-                <div key={id} className="space-y-1.5">
-                  <Label htmlFor={id} className="text-sm">{label}</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      id={id}
-                      type="color"
-                      value={(settings as any)[id] || fallback}
-                      onChange={(e) => handleChange(id, e.target.value)}
-                      className="w-12 h-9 p-1 cursor-pointer rounded"
-                    />
-                    <Input
-                      value={(settings as any)[id] || fallback}
-                      onChange={(e) => handleChange(id, e.target.value)}
-                      placeholder={fallback}
-                      className="flex-1 h-9"
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="grid gap-4">
+          <FileUploadField
+            label="Logo"
+            description="Logo website yang tampil di header survei"
+            value={settings.logo_url || null}
+            onUploaded={(url) => handleChange("logo_url", url || "")}
+            folder="logo/"
+          />
+          <FileUploadField
+            label="Favicon"
+            description="Icon kecil yang tampil di tab browser"
+            value={settings.favicon_url || null}
+            onUploaded={(url) => handleChange("favicon_url", url || "")}
+            folder="favicon/"
+            previewSize="sm"
+          />
+          <FileUploadField
+            label="Background Image"
+            description="Gambar latar belakang halaman survei"
+            value={(settings as any).background_url || null}
+            onUploaded={(url) => handleChange("background_url", url || "")}
+            folder="background/"
+            previewSize="lg"
+          />
+        </div>
+      </div>
+
+      {/* Background Color */}
+      <div className="p-6 bg-card rounded-lg border border-border space-y-5">
+        <div className="flex items-center gap-2">
+          <Palette className="w-5 h-5 text-muted-foreground" />
+          <h2 className="text-lg font-semibold text-foreground">Warna Background</h2>
+        </div>
+        <p className="text-xs text-muted-foreground -mt-2">
+          Warna background akan digunakan jika tidak ada background image.
+        </p>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="background_color" className="text-sm">Warna Background Survei</Label>
+          <div className="flex gap-2">
+            <Input
+              id="background_color"
+              type="color"
+              value={settings.background_color || "#f8fafc"}
+              onChange={(e) => handleChange("background_color", e.target.value)}
+              className="w-12 h-9 p-1 cursor-pointer rounded"
+            />
+            <Input
+              value={settings.background_color || "#f8fafc"}
+              onChange={(e) => handleChange("background_color", e.target.value)}
+              placeholder="#f8fafc"
+              className="flex-1 h-9"
+            />
           </div>
         </div>
-
-        <Button onClick={handleSave} disabled={isSaving} className="gap-2 bg-foreground text-background hover:bg-foreground/90">
-          {isSaving ? (
-            <>
-              <Loader2 className="w-4 h-4 animate-spin" />
-              Menyimpan...
-            </>
-          ) : (
-            <>
-              <Save className="w-4 h-4" />
-              Simpan Settings
-            </>
-          )}
-        </Button>
       </div>
+
+      {/* Save Button */}
+      <Button onClick={handleSave} disabled={isSaving} className="w-full gap-2 bg-foreground text-background hover:bg-foreground/90">
+        {isSaving ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            Menyimpan...
+          </>
+        ) : (
+          <>
+            <Save className="w-4 h-4" />
+            Simpan Settings
+          </>
+        )}
+      </Button>
     </div>
   );
 }
