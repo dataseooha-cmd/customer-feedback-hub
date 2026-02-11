@@ -8,12 +8,18 @@ import { SurveyFooter } from "@/components/survey/SurveyFooter";
 import { ProgressStepper } from "@/components/survey/ProgressStepper";
 import { RefreshCw, CheckCircle } from "lucide-react";
 
+function formatResponseCode(num: number | undefined): string {
+  if (!num) return "#000";
+  return `#${String(num).padStart(3, "0")}`;
+}
+
 export default function SuccessPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
 
   const createdAt = location.state?.created_at;
+  const responseNumber = location.state?.response_number;
 
   useEffect(() => {
     loadSettings();
@@ -62,7 +68,12 @@ export default function SuccessPage() {
               </p>
 
               {/* Response info */}
-              <div className="bg-secondary rounded-lg py-4 px-6 inline-block mx-auto">
+              <div className="bg-secondary rounded-lg py-4 px-6 inline-flex flex-col gap-1 mx-auto">
+                {responseNumber && (
+                  <p className="text-sm text-foreground">
+                    🎫 Kode Respons: <strong className="font-mono text-base">{formatResponseCode(responseNumber)}</strong>
+                  </p>
+                )}
                 <p className="text-sm text-foreground">
                   ⏰ Waktu: <strong>{formattedTime}</strong>
                 </p>
