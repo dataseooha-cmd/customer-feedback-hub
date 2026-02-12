@@ -49,17 +49,17 @@ export default function SuccessPage() {
   }
 
   return (
-    <div className="min-h-screen survey-bg py-6 px-4" style={bgStyle}>
+    <div className="min-h-screen survey-bg py-4 sm:py-6 px-3 sm:px-4" style={bgStyle}>
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <SurveyHeader settings={siteSettings} />
-          <div className="px-6 pt-4">
+          <div className="px-4 sm:px-6 pt-4">
             <ProgressStepper currentStep={3} totalSteps={3} />
           </div>
 
-          <div className="px-6 py-8">
+          <div className="px-4 sm:px-6 py-6 sm:py-8">
             <div className="text-center space-y-4">
-              <p className="text-2xl font-bold text-emerald-600">🎉 Terima kasih!</p>
+              <p className="text-xl sm:text-2xl font-bold text-emerald-600">🎉 Terima kasih!</p>
               <p className="font-semibold text-foreground">
                 Survei Anda telah berhasil dikirim dan tersimpan dengan aman.
               </p>

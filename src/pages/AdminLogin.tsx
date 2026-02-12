@@ -64,7 +64,7 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-muted flex items-center justify-center px-4">
+    <div className="min-h-screen bg-muted flex items-center justify-center px-3 sm:px-4">
       <div className="w-full max-w-sm">
         <div className="bg-card rounded-xl shadow-sm border border-border p-8">
           <div className="flex justify-center mb-6">
