@@ -176,12 +176,12 @@ export function SettingsPanel() {
   }
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-4 sm:space-y-6">
       {/* Website Info */}
-      <div className="p-6 bg-card rounded-lg border border-border space-y-5">
+      <div className="p-4 sm:p-6 bg-card rounded-lg border border-border space-y-5">
         <div className="flex items-center gap-2">
           <Globe className="w-5 h-5 text-muted-foreground" />
-          <h2 className="text-lg font-semibold text-foreground">Informasi Website</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">Informasi Website</h2>
         </div>
 
         <div className="grid gap-4">
@@ -229,10 +229,10 @@ export function SettingsPanel() {
       </div>
 
       {/* Assets Upload */}
-      <div className="p-6 bg-card rounded-lg border border-border space-y-5">
+      <div className="p-4 sm:p-6 bg-card rounded-lg border border-border space-y-5">
         <div className="flex items-center gap-2">
           <Image className="w-5 h-5 text-muted-foreground" />
-          <h2 className="text-lg font-semibold text-foreground">Upload Assets</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">Upload Assets</h2>
         </div>
         <p className="text-xs text-muted-foreground -mt-2">
           Perubahan akan diterapkan setelah menekan tombol <strong>Simpan Settings</strong>.
@@ -265,32 +265,64 @@ export function SettingsPanel() {
         </div>
       </div>
 
-      {/* Background Color */}
-      <div className="p-6 bg-card rounded-lg border border-border space-y-5">
+      {/* Warna Kustomisasi */}
+      <div className="p-4 sm:p-6 bg-card rounded-lg border border-border space-y-5">
         <div className="flex items-center gap-2">
           <Palette className="w-5 h-5 text-muted-foreground" />
-          <h2 className="text-lg font-semibold text-foreground">Warna Background</h2>
+          <h2 className="text-base sm:text-lg font-semibold text-foreground">Warna Kustomisasi</h2>
         </div>
         <p className="text-xs text-muted-foreground -mt-2">
-          Warna background akan digunakan jika tidak ada background image.
+          Atur warna header dan background halaman survei.
         </p>
 
-        <div className="space-y-1.5">
-          <Label htmlFor="background_color" className="text-sm">Warna Background Survei</Label>
-          <div className="flex gap-2">
-            <Input
-              id="background_color"
-              type="color"
-              value={settings.background_color || "#f8fafc"}
-              onChange={(e) => handleChange("background_color", e.target.value)}
-              className="w-12 h-9 p-1 cursor-pointer rounded"
-            />
-            <Input
-              value={settings.background_color || "#f8fafc"}
-              onChange={(e) => handleChange("background_color", e.target.value)}
-              placeholder="#f8fafc"
-              className="flex-1 h-9"
-            />
+        <div className="grid gap-4">
+          {/* Header Color */}
+          <div className="space-y-1.5">
+            <Label htmlFor="header_color" className="text-sm">Warna Header Survei</Label>
+            <p className="text-xs text-muted-foreground">Warna latar belakang bagian judul survei</p>
+            <div className="flex gap-2">
+              <Input
+                id="header_color"
+                type="color"
+                value={settings.header_color || "#222222"}
+                onChange={(e) => handleChange("header_color", e.target.value)}
+                className="w-12 h-9 p-1 cursor-pointer rounded"
+              />
+              <Input
+                value={settings.header_color || "#222222"}
+                onChange={(e) => handleChange("header_color", e.target.value)}
+                placeholder="#222222"
+                className="flex-1 h-9"
+              />
+            </div>
+            {/* Preview */}
+            <div
+              className="rounded-lg p-3 mt-2 flex items-center gap-2"
+              style={{ background: settings.header_color || "#222222" }}
+            >
+              <span className="text-white text-xs font-medium">Preview Header</span>
+            </div>
+          </div>
+
+          {/* Background Color */}
+          <div className="space-y-1.5">
+            <Label htmlFor="background_color" className="text-sm">Warna Background Survei</Label>
+            <p className="text-xs text-muted-foreground">Digunakan jika tidak ada background image</p>
+            <div className="flex gap-2">
+              <Input
+                id="background_color"
+                type="color"
+                value={settings.background_color || "#f8fafc"}
+                onChange={(e) => handleChange("background_color", e.target.value)}
+                className="w-12 h-9 p-1 cursor-pointer rounded"
+              />
+              <Input
+                value={settings.background_color || "#f8fafc"}
+                onChange={(e) => handleChange("background_color", e.target.value)}
+                placeholder="#f8fafc"
+                className="flex-1 h-9"
+              />
+            </div>
           </div>
         </div>
       </div>

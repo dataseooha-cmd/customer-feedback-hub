@@ -151,15 +151,15 @@ export default function SurveyForm() {
   }
 
   return (
-    <div className="min-h-screen survey-bg py-6 px-4" style={bgStyle}>
+    <div className="min-h-screen survey-bg py-4 sm:py-6 px-3 sm:px-4" style={bgStyle}>
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <SurveyHeader settings={siteSettings} />
-          <div className="px-6 pt-4">
+          <div className="px-4 sm:px-6 pt-4">
             <ProgressStepper currentStep={currentStep} totalSteps={3} progressColor={siteSettings?.progress_color} />
           </div>
 
-          <div className="px-6 py-4 space-y-4">
+          <div className="px-4 sm:px-6 py-4 space-y-4">
             {currentStep === 1 && (
               <Step1Identity data={data} onChange={handleChange} siteName={siteName} errors={errors} />
             )}
@@ -175,7 +175,7 @@ export default function SurveyForm() {
           </div>
 
           {/* Navigation */}
-          <div className="px-6 py-4 flex items-center justify-between">
+          <div className="px-4 sm:px-6 py-4 flex items-center justify-between">
             {currentStep > 1 ? (
               <Button variant="outline" onClick={handlePrev} className="gap-1.5 text-sm">
                 <ChevronLeft className="w-4 h-4" />

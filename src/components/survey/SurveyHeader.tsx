@@ -13,21 +13,21 @@ export function SurveyHeader({ settings }: SurveyHeaderProps) {
 
   return (
     <div
-      className="text-white px-6 py-5 rounded-t-xl flex items-start gap-4 survey-header-bg"
+      className="text-white px-4 sm:px-6 py-4 sm:py-5 rounded-t-xl flex items-start gap-3 sm:gap-4 survey-header-bg"
       style={headerBg ? { background: headerBg } : undefined}
     >
       {settings?.logo_url && (
         <img
           src={settings.logo_url}
           alt={siteName}
-          className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
+          className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg object-cover flex-shrink-0"
         />
       )}
-      <div>
-        <h1 className="text-xl md:text-2xl font-display font-bold">
+      <div className="min-w-0">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-display font-bold leading-tight">
           {siteTitle}
         </h1>
-        <p className="text-sm text-white/80 mt-1">
+        <p className="text-xs sm:text-sm text-white/80 mt-1 leading-relaxed">
           {`${siteName} selalu berupaya mengutamakan layanan terpadu bagi member setia. ${siteDescription}`}
         </p>
       </div>
