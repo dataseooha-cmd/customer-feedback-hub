@@ -188,6 +188,29 @@ export type Database = {
         }
         Returns: boolean
       }
+      submit_survey: {
+        Args: {
+          p_access_ease?: string
+          p_casino_experience?: string
+          p_cs_service?: string
+          p_data_security?: string
+          p_deposit_speed?: string
+          p_overall_rating?: number
+          p_preferred_cs_media?: string
+          p_referral_other?: string
+          p_referral_source: string
+          p_registration_ease?: string
+          p_slot_experience?: string
+          p_suggestions?: string
+          p_togel_experience?: string
+          p_user_id: string
+          p_whatsapp: string
+          p_withdraw_issue?: string
+          p_withdraw_speed?: string
+          p_would_recommend?: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       app_role: "admin" | "user"

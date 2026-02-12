@@ -95,33 +95,33 @@ export default function SurveyForm() {
 
     setIsSubmitting(true);
     try {
-      const { data: result, error } = await supabase.from("responses").insert({
-        user_id: data.user_id,
-        whatsapp: data.whatsapp,
-        referral_source: data.referral_source,
-        referral_other: data.referral_other || null,
-        registration_ease: data.registration_ease,
-        deposit_speed: data.deposit_speed,
-        withdraw_speed: data.withdraw_speed,
-        cs_service: data.cs_service,
-        togel_experience: data.togel_experience,
-        slot_experience: data.slot_experience,
-        casino_experience: data.casino_experience,
-        access_ease: data.access_ease,
-        would_recommend: data.would_recommend,
-        data_security: data.data_security,
-        withdraw_issue: data.withdraw_issue,
-        preferred_cs_media: data.preferred_cs_media,
-        overall_rating: data.overall_rating || 0,
-        suggestions: data.suggestions || null,
-      }).select("response_number").single();
+      const { data: responseNumber, error } = await supabase.rpc("submit_survey", {
+        p_user_id: data.user_id!,
+        p_whatsapp: data.whatsapp!,
+        p_referral_source: data.referral_source!,
+        p_referral_other: data.referral_other || null,
+        p_registration_ease: data.registration_ease!,
+        p_deposit_speed: data.deposit_speed!,
+        p_withdraw_speed: data.withdraw_speed!,
+        p_cs_service: data.cs_service!,
+        p_togel_experience: data.togel_experience!,
+        p_slot_experience: data.slot_experience!,
+        p_casino_experience: data.casino_experience!,
+        p_access_ease: data.access_ease!,
+        p_would_recommend: data.would_recommend!,
+        p_data_security: data.data_security!,
+        p_withdraw_issue: data.withdraw_issue!,
+        p_preferred_cs_media: data.preferred_cs_media!,
+        p_overall_rating: data.overall_rating || 0,
+        p_suggestions: data.suggestions || null,
+      });
 
       if (error) throw error;
 
       navigate("/success", {
         state: {
           created_at: new Date().toISOString(),
-          response_number: result?.response_number,
+          response_number: responseNumber,
         },
       });
     } catch (error: any) {
