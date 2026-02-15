@@ -35,7 +35,7 @@ export function Step1Identity({ data, onChange, siteName, errors }: Step1Identit
             </Label>
             <Input
               id="user_id"
-              placeholder={`contoh: ${siteName.toLowerCase()}123`}
+              placeholder="contoh: member12"
               value={data.user_id || ""}
               onChange={(e) => onChange("user_id", e.target.value)}
               className={`bg-white border ${errors.user_id ? "border-destructive" : "border-border"}`}
@@ -52,7 +52,7 @@ export function Step1Identity({ data, onChange, siteName, errors }: Step1Identit
             </Label>
             <Input
               id="whatsapp"
-              placeholder="contoh: 6281234567890"
+              placeholder="contoh: 081234567890"
               value={data.whatsapp || ""}
               onChange={(e) => onChange("whatsapp", e.target.value)}
               className={`bg-white border ${errors.whatsapp ? "border-destructive" : "border-border"}`}
