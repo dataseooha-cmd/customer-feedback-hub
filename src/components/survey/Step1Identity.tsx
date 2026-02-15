@@ -35,7 +35,7 @@ export function Step1Identity({ data, onChange, siteName, errors }: Step1Identit
             </Label>
             <Input
               id="user_id"
-              placeholder={`contoh: ${siteName.toLowerCase()}12`}
+              placeholder={`contoh: ${siteName.toLowerCase()}123`}
               value={data.user_id || ""}
               onChange={(e) => onChange("user_id", e.target.value)}
               className={`bg-white border ${errors.user_id ? "border-destructive" : "border-border"}`}
