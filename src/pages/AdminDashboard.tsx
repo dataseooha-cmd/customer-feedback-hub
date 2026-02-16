@@ -69,34 +69,33 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-muted">
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-foreground flex items-center justify-center flex-shrink-0">
-              <BarChart3 className="w-4 h-4 text-background" />
+    <div className="min-h-screen bg-[hsl(0_0%_96%)]">
+      <header className="border-b border-[hsl(0_0%_90%)] bg-white">
+        <div className="container mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-9 h-9 rounded-lg bg-[hsl(0_0%_15%)] flex items-center justify-center flex-shrink-0">
+              <BarChart3 className="w-4 h-4 text-white" />
             </div>
             <div className="min-w-0">
-              <h1 className="text-sm sm:text-base font-semibold text-foreground">Admin Panel</h1>
-              <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
+              <h1 className="text-base font-semibold text-[hsl(0_0%_15%)]">Admin Panel</h1>
+              <p className="text-xs text-[hsl(0_0%_55%)] truncate">{user?.email}</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 text-muted-foreground hover:text-foreground flex-shrink-0">
+          <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5 text-[hsl(0_0%_55%)] hover:text-[hsl(0_0%_15%)] hover:bg-[hsl(0_0%_96%)] flex-shrink-0">
             <LogOut className="w-4 h-4" />
             <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
       </header>
 
-      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6">
-        <Tabs defaultValue="responses" className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full max-w-xs grid-cols-2 bg-card border border-border">
-            <TabsTrigger value="responses" className="gap-1.5 text-xs">
+      <main className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <Tabs defaultValue="responses" className="space-y-6">
+          <TabsList className="grid w-full max-w-xs grid-cols-2 bg-white border border-[hsl(0_0%_90%)] rounded-lg p-1">
+            <TabsTrigger value="responses" className="gap-1.5 text-xs rounded-md data-[state=active]:bg-[hsl(0_0%_15%)] data-[state=active]:text-white">
               <Users className="w-3.5 h-3.5" />
-              <span className="hidden xs:inline">Responses</span>
-              <span className="xs:hidden">Data</span>
+              Responses
             </TabsTrigger>
-            <TabsTrigger value="settings" className="gap-1.5 text-xs">
+            <TabsTrigger value="settings" className="gap-1.5 text-xs rounded-md data-[state=active]:bg-[hsl(0_0%_15%)] data-[state=active]:text-white">
               <Settings className="w-3.5 h-3.5" />
               Settings
             </TabsTrigger>

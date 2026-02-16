@@ -178,7 +178,7 @@ export function SettingsPanel() {
   return (
     <div className="max-w-2xl space-y-4 sm:space-y-6">
       {/* Website Info */}
-      <div className="p-4 sm:p-6 bg-card rounded-lg border border-border space-y-5">
+      <div className="p-5 sm:p-6 bg-white rounded-xl border border-[hsl(0_0%_90%)] shadow-sm space-y-5">
         <div className="flex items-center gap-2">
           <Globe className="w-5 h-5 text-muted-foreground" />
           <h2 className="text-base sm:text-lg font-semibold text-foreground">Informasi Website</h2>
@@ -229,7 +229,7 @@ export function SettingsPanel() {
       </div>
 
       {/* Assets Upload */}
-      <div className="p-4 sm:p-6 bg-card rounded-lg border border-border space-y-5">
+      <div className="p-5 sm:p-6 bg-white rounded-xl border border-[hsl(0_0%_90%)] shadow-sm space-y-5">
         <div className="flex items-center gap-2">
           <Image className="w-5 h-5 text-muted-foreground" />
           <h2 className="text-base sm:text-lg font-semibold text-foreground">Upload Assets</h2>
@@ -266,7 +266,7 @@ export function SettingsPanel() {
       </div>
 
       {/* Warna Kustomisasi */}
-      <div className="p-4 sm:p-6 bg-card rounded-lg border border-border space-y-5">
+      <div className="p-5 sm:p-6 bg-white rounded-xl border border-[hsl(0_0%_90%)] shadow-sm space-y-5">
         <div className="flex items-center gap-2">
           <Palette className="w-5 h-5 text-muted-foreground" />
           <h2 className="text-base sm:text-lg font-semibold text-foreground">Warna Kustomisasi</h2>
@@ -328,7 +328,7 @@ export function SettingsPanel() {
       </div>
 
       {/* Save Button */}
-      <Button onClick={handleSave} disabled={isSaving} className="w-full gap-2 bg-foreground text-background hover:bg-foreground/90">
+      <Button onClick={handleSave} disabled={isSaving} className="w-full gap-2 bg-[hsl(0_0%_15%)] text-white hover:bg-[hsl(0_0%_25%)]">
         {isSaving ? (
           <>
             <Loader2 className="w-4 h-4 animate-spin" />
