@@ -9,7 +9,7 @@ export function SurveyFooter({ settings }: SurveyFooterProps) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="flex items-center justify-between px-4 py-4 text-xs text-foreground/60 max-w-3xl mx-auto w-full">
+    <footer className="flex items-center justify-between px-4 py-4 text-xs text-white/70 max-w-3xl mx-auto w-full">
       <span>© {year} {siteName} • Semua hak dilindungi.</span>
       {settings?.cs_contact && (
         <span>
@@ -18,7 +18,7 @@ export function SurveyFooter({ settings }: SurveyFooterProps) {
             href={settings.cs_contact}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-bold text-foreground hover:underline"
+            className="font-bold text-white hover:underline"
           >
             Hubungi CS
           </a>

@@ -115,19 +115,19 @@ export function ResponsesTable() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="p-4 bg-card rounded-lg border border-border">
-          <p className="text-sm text-muted-foreground">Total Responses</p>
-          <p className="text-3xl font-display font-bold text-foreground">{responses.length}</p>
+        <div className="p-5 bg-white rounded-xl border border-[hsl(0_0%_90%)] shadow-sm">
+          <p className="text-sm text-[hsl(0_0%_55%)]">Total Responses</p>
+          <p className="text-3xl font-bold text-[hsl(0_0%_15%)] mt-1">{responses.length}</p>
         </div>
-        <div className="p-4 bg-card rounded-lg border border-border">
-          <p className="text-sm text-muted-foreground">Akan Merekomendasikan</p>
-          <p className="text-3xl font-display font-bold text-foreground">
+        <div className="p-5 bg-white rounded-xl border border-[hsl(0_0%_90%)] shadow-sm">
+          <p className="text-sm text-[hsl(0_0%_55%)]">Akan Merekomendasikan</p>
+          <p className="text-3xl font-bold text-[hsl(0_0%_15%)] mt-1">
             {responses.filter((r) => r.would_recommend === "pasti" || r.would_recommend === "sudah").length}
           </p>
         </div>
-        <div className="p-4 bg-card rounded-lg border border-border">
-          <p className="text-sm text-muted-foreground">Hari Ini</p>
-          <p className="text-3xl font-display font-bold text-foreground">
+        <div className="p-5 bg-white rounded-xl border border-[hsl(0_0%_90%)] shadow-sm">
+          <p className="text-sm text-[hsl(0_0%_55%)]">Hari Ini</p>
+          <p className="text-3xl font-bold text-[hsl(0_0%_15%)] mt-1">
             {responses.filter((r) => new Date(r.created_at).toDateString() === new Date().toDateString()).length}
           </p>
         </div>
@@ -147,13 +147,13 @@ export function ResponsesTable() {
           <Button variant="outline" onClick={loadResponses} className="gap-2">
             <RefreshCw className="w-4 h-4" /> Refresh
           </Button>
-          <Button onClick={exportToCSV} className="gap-2 bg-foreground text-background hover:bg-foreground/90">
+          <Button onClick={exportToCSV} className="gap-2 bg-[hsl(0_0%_15%)] text-white hover:bg-[hsl(0_0%_25%)]">
             <Download className="w-4 h-4" /> Export CSV
           </Button>
         </div>
       </div>
 
-      <div className="rounded-lg border border-border overflow-hidden">
+      <div className="rounded-xl border border-[hsl(0_0%_90%)] overflow-hidden bg-white shadow-sm">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>

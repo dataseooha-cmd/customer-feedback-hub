@@ -175,31 +175,35 @@ export default function SurveyForm() {
           </div>
 
           {/* Navigation */}
-          <div className="px-4 sm:px-6 py-4 flex items-center justify-between">
-            {currentStep > 1 ? (
-              <Button variant="outline" onClick={handlePrev} className="gap-1.5 text-sm">
-                <ChevronLeft className="w-4 h-4" />
-                Kembali
-              </Button>
-            ) : (
-              <div />
-            )}
-
-            {currentStep < 3 ? (
-              <Button onClick={handleNext} className="gap-1.5 text-sm" style={{ background: siteSettings?.primary_color || undefined, color: '#fff' }}>
-                Lanjut
-                <ChevronRight className="w-4 h-4" />
-              </Button>
-            ) : (
-              <div className="flex items-center gap-3">
+          <div className="px-4 sm:px-6 py-4 space-y-3">
+            {currentStep === 3 && (
+              <div className="flex justify-center">
                 <button
                   type="button"
                   onClick={() => setShowSummary(!showSummary)}
                   className="text-sm font-medium text-foreground hover:underline flex items-center gap-1.5"
                 >
                   <Eye className="w-4 h-4" />
-                  Lihat Ringkasan
+                  {showSummary ? "Sembunyikan Ringkasan" : "Lihat Ringkasan"}
                 </button>
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              {currentStep > 1 ? (
+                <Button variant="outline" onClick={handlePrev} className="gap-1.5 text-sm">
+                  <ChevronLeft className="w-4 h-4" />
+                  Kembali
+                </Button>
+              ) : (
+                <div />
+              )}
+
+              {currentStep < 3 ? (
+                <Button onClick={handleNext} className="gap-1.5 text-sm" style={{ background: siteSettings?.primary_color || undefined, color: '#fff' }}>
+                  Lanjut
+                  <ChevronRight className="w-4 h-4" />
+                </Button>
+              ) : (
                 <Button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
@@ -218,8 +222,8 @@ export default function SurveyForm() {
                     </>
                   )}
                 </Button>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
